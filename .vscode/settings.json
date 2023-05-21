@@ -3,6 +3,8 @@
         "string_view": "cpp",
         "regex": "cpp",
         "string": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "deque": "cpp",
+        "vector": "cpp"
     }
 }

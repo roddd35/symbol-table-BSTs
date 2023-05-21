@@ -90,3 +90,23 @@ void vetorOrdenado::imprime(){
         cout << this->palavras[i] << " " << this->info[i].getOcorrencias() << endl;
     }
 }
+
+vector<string> vetorOrdenado::palavraMaisFrequente(){
+    int maior = -1;
+    int total = 0;
+    for(int i = 0; i < this->qtdPalavras; i++){
+        if(i == 0){
+            this->v.push_back(this->palavras[i]);
+            total += 1;
+        }
+
+        else if(this->info[i].getOcorrencias() >= maior){
+            if(this->info[i].getOcorrencias() > maior){
+                maior = this->info[i].getOcorrencias();
+                this->v.clear();
+            }
+            this->v.push_back(this->palavras[i]);
+        }
+    }
+    return this->v;
+}

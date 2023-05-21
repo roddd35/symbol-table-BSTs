@@ -5,6 +5,10 @@
 
 using namespace std;
 
+struct palavrasMaisFrequentes {
+    vector<string> palavras;
+    int frequencia = 0;
+};
 class Item {
     private:
         int qtdLetras;

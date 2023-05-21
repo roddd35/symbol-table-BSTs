@@ -4,10 +4,13 @@
 #include "vetorOrdenado.h"
 #include <iostream>
 #include <cstring>
+#include <algorithm>
 #define MAX 256
 
 using namespace std;
 
+int repeteLetra(string palavra);
+int qtdVogaisSemRepeticao(string palavra);
 void imprimeSep();
 void imprimeVector(int q, vector<string> v);
 void imprime(int estrutura, vetorOrdenado* vector, No* noABB, treapNode* noTreap, redBlackNode* noRubroNegra);
@@ -20,7 +23,9 @@ void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTr
 int main(){
     int n;
     int q;
-    int total = 0;
+    int totalLongest = 0;
+    int totalSR = 0;
+    int totalVD = 0;
     int qtdConsultas;
     int nomeEstrutura;
     char nomeArquivo[MAX];
@@ -67,15 +72,44 @@ int main(){
         palavra = strtok(linha, "  ,`’‘’.-—_?![](){}@#$%&*+=|;/><1234567890:\n");
         while(palavra != NULL){
             if(*palavra != '\n' && *palavra != '\0'){
-                // Pré-Processamento das palavras mais longas
-                if(total == 0){
-                    longestWords.push_back(palavra);
-                    total += 1;
+                // Pré Processamento
+                if(totalVD == 0){
+                    if(qtdVogaisSemRepeticao(palavra) > 0){
+                        vogaisSemRepeticao.push_back(palavra);
+                        totalVD += 1;
+                    }
                 }
-                else if(strlen(palavra) == longestWords[0].length())
+                else if(qtdVogaisSemRepeticao(palavra) >= qtdVogaisSemRepeticao(vogaisSemRepeticao[0])){
+                    if(qtdVogaisSemRepeticao(palavra) > qtdVogaisSemRepeticao(vogaisSemRepeticao[0])){
+                        vogaisSemRepeticao.clear();
+                        vogaisSemRepeticao.push_back(palavra);
+                    }
+                    else if(strlen(palavra) <= vogaisSemRepeticao[0].length()){
+                        if(strlen(palavra) < vogaisSemRepeticao[0].length())
+                            vogaisSemRepeticao.clear();
+                        vogaisSemRepeticao.push_back(palavra);
+                    }
+                }
+
+                if(totalSR == 0){
+                    if(!repeteLetra(palavra)){
+                        maioresSemRepeticao.push_back(palavra);
+                        totalSR += 1;
+                    }
+                }
+                else if(strlen(palavra) >= maioresSemRepeticao[0].length() && !repeteLetra(palavra)){
+                    if(strlen(palavra) > maioresSemRepeticao[0].length())
+                        maioresSemRepeticao.clear();
+                    maioresSemRepeticao.push_back(palavra);
+                }
+
+                if(totalLongest == 0){
                     longestWords.push_back(palavra);
-                else if(strlen(palavra) > longestWords[0].length()){
-                    longestWords.clear();
+                    totalLongest += 1;
+                }
+                else if(strlen(palavra) >= longestWords[0].length()){
+                    if(strlen(palavra) > longestWords[0].length())
+                        longestWords.clear();
                     longestWords.push_back(palavra);
                 }
 
@@ -114,6 +148,40 @@ int main(){
     return 0;
 }
 
+int qtdVogaisSemRepeticao(string palavra){
+    int totalVogais = 0;
+    int v[5];
+    for(int i = 0; i < 5; i++)
+        v[i] = 0;
+
+    for(int i = 0; i < (int)palavra.length(); i++){
+        if(palavra[i] == 'a' || palavra[i] == 'A')
+            v[0] += 1;
+        if(palavra[i] == 'e'|| palavra[i] == 'E')
+            v[1] += 1;
+        if(palavra[i] == 'i'|| palavra[i] == 'I')
+            v[2] += 1;
+        if(palavra[i] == 'o'|| palavra[i] == 'O')
+            v[3] += 1;
+        if(palavra[i] == 'u'|| palavra[i] == 'U')
+            v[4] += 1;
+    }
+
+    for(int i = 0; i < 5; i++)
+        if(v[i] == 1)
+            totalVogais++;
+
+    return totalVogais;
+}
+
+int repeteLetra(string palavra){
+    sort(palavra.begin(), palavra.end());
+    for(int i = 0; i < (int)palavra.length() - 1; i++)
+        if(palavra[i] == palavra[i+1])
+            return 1;
+    return 0;
+}
+
 void imprimeSep(){
     cout << endl << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-" << endl << endl;
 }
@@ -134,6 +202,25 @@ void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTr
     string palavra;
 
     imprimeSep();
+
+    // CONSULTA PALAVRAS MAIS FREQUENTES (F)
+    if(q == 1){
+        palavrasMaisFrequentes* p = (palavrasMaisFrequentes*)malloc(sizeof(palavrasMaisFrequentes));
+        p->palavras = maisFrequentes;
+        cout << "As palavras mais frequentes do texto são: " << endl;
+        if(estrutura == 1){
+            imprimeVector(q, v->palavraMaisFrequente());
+        }
+        if(estrutura == 2){
+            imprimeVector(q, noABB->palavraMaisFrequente(noABB, p));
+        }
+        if(estrutura == 3){
+            imprimeVector(q, noTreap->palavraMaisFrequente(noTreap, p));
+        }
+        if(estrutura == 5){
+            imprimeVector(q, noRubroNegra->palavraMaisFrequente(noRubroNegra, p));
+        }
+    }
 
     // CONSULTA O(PALAVRA)
     if(q == 2){
@@ -158,8 +245,18 @@ void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTr
         cout << "As palavras mais longas são: " << endl;
         imprimeVector(q, longestWords);
     }
+    
+    // CONSULTA MAIORES PALAVRAS QUE NÃO REPETEM LETRAS (SR)
+    if(q == 4){
+        cout << "As maiores palavras que não repetem letras são: " << endl;
+        imprimeVector(q, maioresSemRepeticao);
+    }
 
-
+    // CONSULTA MENORES PALAVRAS COM MAIS VOGAIS (VD)
+    if(q == 5){
+        cout << "As menores palavras que não repetem vogais são: " << endl;
+        imprimeVector(q, vogaisSemRepeticao);
+    }
     return;
 }
 

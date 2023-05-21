@@ -5,6 +5,7 @@
 #include <iostream>
 
 using namespace std;
+
 class treapNode {
     private:
         int prioridade;
@@ -20,4 +21,5 @@ class treapNode {
         treapNode* rotacionaEsq(treapNode* raiz);
         treapNode* rotacionaDir(treapNode* raiz);
         treapNode* insereTreap(treapNode* raiz, string palavra);
+        vector<string> palavraMaisFrequente(treapNode* raiz, palavrasMaisFrequentes* p);
 };

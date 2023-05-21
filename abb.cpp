@@ -45,3 +45,20 @@ int No::qtdOcorrencias(No* raiz, string palavra){
         return qtdOcorrencias(raiz->esq, palavra);
     return 0;
 }
+
+vector<string> No::palavraMaisFrequente(No* raiz, palavrasMaisFrequentes* p){
+    if(raiz->esq != nullptr)
+        palavraMaisFrequente(raiz->esq, p);
+
+    if(raiz->info.getOcorrencias() >= p->frequencia){
+        if(raiz->info.getOcorrencias() > p->frequencia){
+            p->palavras.clear();
+            p->frequencia = raiz->info.getOcorrencias();
+        }
+        p->palavras.push_back(raiz->palavra);
+    }
+
+    if(raiz->dir != nullptr)
+        palavraMaisFrequente(raiz->dir, p);
+    return p->palavras;
+}

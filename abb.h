@@ -18,4 +18,5 @@ class No {
         void imprime(No* raiz);
         int qtdOcorrencias(No* raiz, string palavra);
         No* insereABB(No* raiz, string palavra);
+        vector<string> palavraMaisFrequente(No* raiz, palavrasMaisFrequentes* p);
 };

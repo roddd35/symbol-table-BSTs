@@ -4,6 +4,7 @@
 #include <string>
 
 #include "item.h"
+
 class redBlackNode {
     private:
         int n;
@@ -23,4 +24,5 @@ class redBlackNode {
         redBlackNode* rotacionaDir(redBlackNode* raiz);
         redBlackNode* rotacionaEsq(redBlackNode* raiz);
         redBlackNode* insereRedBlack(redBlackNode* raiz, string palavra);
+        vector<string> palavraMaisFrequente(redBlackNode* raiz, palavrasMaisFrequentes* p);
 };
