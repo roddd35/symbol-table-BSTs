@@ -15,8 +15,9 @@ class redBlackNode {
         redBlackNode* dir;
 
     public:
-        int size(redBlackNode* raiz);
         redBlackNode();
+        int size(redBlackNode* raiz);
+        int qtdOcorrencias(redBlackNode* raiz, string palavra);
         void imprime(redBlackNode* raiz);
         void flipColor(redBlackNode* raiz);
         bool ehVermelho(redBlackNode* no);

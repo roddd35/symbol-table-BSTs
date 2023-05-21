@@ -16,10 +16,6 @@ int Item::getOcorrencias(){
     return this->qtdOcorrencias;
 }
 
-int Item::getQtdPalavras(){
-    return this->qtdPalavras;
-}
-
 int Item::contaVogais(string palavra){
     int totalVogais = 0;
     int v[5];
@@ -56,8 +52,4 @@ void Item::setLetras(int qtd){
 
 void Item::setOcorrencias(int qtd){
     this->qtdOcorrencias = qtd;
-}
-
-void Item::setQtdPalavras(int qtd){
-    this->qtdPalavras = qtd;
 }

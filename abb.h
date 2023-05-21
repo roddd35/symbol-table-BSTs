@@ -16,6 +16,6 @@ class No {
     public:
         No();
         void imprime(No* raiz);
-        int contaVogais(string palavra);
+        int qtdOcorrencias(No* raiz, string palavra);
         No* insereABB(No* raiz, string palavra);
 };

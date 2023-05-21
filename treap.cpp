@@ -61,3 +61,15 @@ void treapNode::imprime(treapNode* raiz){
         imprime(raiz->dir);
     }
 }
+
+int treapNode::qtdOcorrencias(treapNode* raiz, string palavra){
+    if(raiz == nullptr)
+        return 0;
+    if(raiz->palavra == palavra)
+        return raiz->info.getOcorrencias();
+    if(raiz->palavra < palavra)
+        return qtdOcorrencias(raiz->dir, palavra);
+    if(raiz->palavra > palavra)
+        return qtdOcorrencias(raiz->esq, palavra);
+    return 0;
+}

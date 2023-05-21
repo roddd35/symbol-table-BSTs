@@ -14,9 +14,9 @@ class vetorOrdenado {
 
     public:
         vetorOrdenado(int n);
-        ~vetorOrdenado();
         int getQtdPalavras();
+        int qtdOcorrencias(string palavra);
+        void imprime();
+        void imprimeVector(int q);
         void insereVetor(string key);
-        void imprime(vetorOrdenado* dados);
-        string* getPalavras();
 };

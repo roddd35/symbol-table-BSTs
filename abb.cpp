@@ -33,3 +33,15 @@ No* No::insereABB(No* raiz, string palavra){
 
     return raiz;
 }
+
+int No::qtdOcorrencias(No* raiz, string palavra){
+    if(raiz == nullptr)
+        return 0;
+    if(raiz->palavra == palavra)
+        return raiz->info.getOcorrencias();
+    if(raiz->palavra < palavra) 
+        return qtdOcorrencias(raiz->dir, palavra);
+    if(raiz->palavra > palavra)
+        return qtdOcorrencias(raiz->esq, palavra);
+    return 0;
+}

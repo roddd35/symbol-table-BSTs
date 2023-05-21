@@ -12,17 +12,26 @@ vetorOrdenado::vetorOrdenado(int n){
     }
 }
 
-vetorOrdenado::~vetorOrdenado(){
-    free(this->info);
-    free(this->palavras);
-}
-
-string* vetorOrdenado::getPalavras(){
-    return this->palavras;
-}
-
 int vetorOrdenado::getQtdPalavras(){
     return this->qtdPalavras;
+}
+
+int vetorOrdenado::qtdOcorrencias(string palavra){
+    int ini = 0;
+    int meio;
+    int fim = this->qtdPalavras - 1;
+
+    while(ini <= fim){
+        meio = (ini + fim) / 2;
+        if(this->palavras[meio] == palavra)
+            return (this->info[meio].getOcorrencias());
+        if(this->palavras[meio] > palavra)
+            fim = meio - 1;
+        if(this->palavras[meio] < palavra)
+            ini = meio + 1;
+    }
+    
+    return 0;
 }
 
 void vetorOrdenado::insereVetor(string key){
@@ -30,7 +39,6 @@ void vetorOrdenado::insereVetor(string key){
     int meio = 0;
     int ini = 0;
     int fim = this->qtdPalavras - 1;
-    string aux;
 
     // não há palavras salvas
     if(this->qtdPalavras == 0){
@@ -39,16 +47,16 @@ void vetorOrdenado::insereVetor(string key){
         this->info[0].setOcorrencias(1);
         this->info[0].setVogais(this->info->contaVogais(key));
         this->qtdPalavras = this->qtdPalavras + 1;
-
         return;
     }
 
     // busca binária
-    while (ini <= fim && !achou){
+    while (ini <= fim){
         meio = (ini + fim) / 2;
         if(this->palavras[meio] == key){
-            this->info[meio].setOcorrencias(this->info->getOcorrencias() + 1);
+            this->info[meio].setOcorrencias(this->info[meio].getOcorrencias() + 1);
             achou = 1;
+            break;
         }
         if(this->palavras[meio] > key)
             fim = meio - 1;
@@ -77,7 +85,7 @@ void vetorOrdenado::insereVetor(string key){
     }
 }
 
-void vetorOrdenado::imprime(vetorOrdenado* dados){
+void vetorOrdenado::imprime(){
     for(int i = 0; i < this->qtdPalavras; i++){
         cout << this->palavras[i] << " " << this->info[i].getOcorrencias() << endl;
     }

@@ -6,6 +6,14 @@
 
 using namespace std;
 
+void imprimeVector(int q);
+typedef struct {
+    vector<string> F;
+    vector<string> L;
+    vector<string> SR;
+    vector<string> VD;
+} dados;
+
 class treapNode {
     private:
         int prioridade;
@@ -15,9 +23,10 @@ class treapNode {
         treapNode* esq;
 
     public:
-        void imprime(treapNode* raiz);
         treapNode();
-        treapNode* insereTreap(treapNode* raiz, string palavra);
+        void imprime(treapNode* raiz);
+        int qtdOcorrencias(treapNode* raiz, string palavra);
         treapNode* rotacionaEsq(treapNode* raiz);
         treapNode* rotacionaDir(treapNode* raiz);
+        treapNode* insereTreap(treapNode* raiz, string palavra);
 };

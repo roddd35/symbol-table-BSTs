@@ -6,6 +6,18 @@ int redBlackNode::size(redBlackNode* raiz){
     return raiz->n;
 }
 
+int redBlackNode::qtdOcorrencias(redBlackNode* raiz, string palavra){
+    if(raiz == nullptr)
+        return 0;
+    if(raiz->palavra == palavra)
+        return raiz->info.getOcorrencias();
+    if(raiz->palavra < palavra)
+        return qtdOcorrencias(raiz->dir, palavra);
+    if(raiz->palavra > palavra)
+        return qtdOcorrencias(raiz->esq, palavra);
+    return 0;
+}
+
 bool redBlackNode::ehVermelho(redBlackNode* no){
     if(no == nullptr)
         return false;
