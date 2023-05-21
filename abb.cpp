@@ -15,7 +15,7 @@ void No::imprime(No* raiz){
 
 No* No::insereABB(No* raiz, string palavra){
     if(raiz == nullptr){
-        raiz = (No*)malloc(sizeof(No));
+        raiz = new No();
         raiz->palavra = palavra;
         raiz->dir = raiz->esq = nullptr;
         raiz->info.setLetras(palavra.length());

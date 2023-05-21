@@ -4,7 +4,6 @@
 #include <string>
 
 #include "item.h"
-
 class redBlackNode {
     private:
         int n;

@@ -68,7 +68,7 @@ redBlackNode* redBlackNode::rotacionaEsq(redBlackNode* raiz){
 
 redBlackNode* redBlackNode::insereRedBlack(redBlackNode* raiz, string palavra){
     if(raiz == nullptr){
-        raiz = (redBlackNode*)malloc(sizeof(redBlackNode));
+        raiz = new redBlackNode();
         raiz->palavra = palavra;
         raiz->n = 1;    // talvez seja 1
         raiz->esq = raiz->dir = nullptr;

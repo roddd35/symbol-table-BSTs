@@ -5,15 +5,6 @@
 #include <iostream>
 
 using namespace std;
-
-void imprimeVector(int q);
-typedef struct {
-    vector<string> F;
-    vector<string> L;
-    vector<string> SR;
-    vector<string> VD;
-} dados;
-
 class treapNode {
     private:
         int prioridade;

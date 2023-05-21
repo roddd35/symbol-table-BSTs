@@ -6,8 +6,9 @@ treapNode::treapNode(){
 
 treapNode* treapNode::insereTreap(treapNode* raiz, string palavra){
     if(raiz == nullptr){
-        raiz = (treapNode*)malloc(sizeof(treapNode));
+        raiz = new treapNode();
         raiz->palavra = palavra;
+        srand(time(nullptr));
         raiz->prioridade = rand()%100;
         raiz->esq = raiz->dir = nullptr;
         raiz->info.setLetras(palavra.length());

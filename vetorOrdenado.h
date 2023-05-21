@@ -17,6 +17,5 @@ class vetorOrdenado {
         int getQtdPalavras();
         int qtdOcorrencias(string palavra);
         void imprime();
-        void imprimeVector(int q);
         void insereVetor(string key);
 };
