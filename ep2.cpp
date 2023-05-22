@@ -66,7 +66,7 @@ int main(){
     arquivo = fopen(nomeArquivo, "r");
     if(arquivo == NULL)
         return 0;
-    
+
     // Leitura das palavras
     while((read = getline(&linha, &len, arquivo)) != (long unsigned int)-1){
         palavra = strtok(linha, "  ,`’‘’.-—_?![](){}@#$%&*+=|;/><1234567890:\n");
@@ -205,7 +205,7 @@ void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTr
 
     // CONSULTA PALAVRAS MAIS FREQUENTES (F)
     if(q == 1){
-        palavrasMaisFrequentes* p = (palavrasMaisFrequentes*)malloc(sizeof(palavrasMaisFrequentes));
+        palavrasMaisFrequentes* p = new palavrasMaisFrequentes();
         p->palavras = maisFrequentes;
         cout << "As palavras mais frequentes do texto são: " << endl;
         if(estrutura == 1){
