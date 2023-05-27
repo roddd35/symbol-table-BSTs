@@ -1,10 +1,10 @@
 PP=g++
 CPPFLAGS= -Wall -g
-OTHERS= item.cpp abb.cpp vetorOrdenado.cpp treap.cpp rubroNegra.cpp
+OTHERS= item.cpp abb.cpp vetorOrdenado.cpp treap.cpp 23tree.cpp rubroNegra.cpp
 
 ################################
 
-OBJS=item.o abb.o vetorOrdenado.o treap.o rubroNegra.o
+OBJS=item.o abb.o vetorOrdenado.o treap.o 23tree.o rubroNegra.o
 MAIN=ep2.cpp
 
 ################################
@@ -17,6 +17,7 @@ item.o: item.h
 abb.o: abb.h
 vetorOrdenado.o: vetorOrdenado.h
 treap.o: treap.h
+23tree.o: 23tree.h
 rubroNegra.o: rubroNegra.h
 ep2.o: ep2.cpp
 

@@ -6,19 +6,21 @@
 
 using namespace std;
 
-class ttNode {
+class A23 {
     private:
         bool twoNode;
         Item info1;
         Item info2;
         string palavra1;
         string palavra2;
-        ttNode* p1;
-        ttNode* p2;
-        ttNode* p3;
+        A23* p1;
+        A23* p2;
+        A23* p3;
     
     public:
-        ttNode();
-        int qtdOcorrencias(ttNode* raiz, string palavra);
-        ttNode* insere23(ttNode* raiz, string palavra, bool* cresceu);
+        void inOrder(A23* raiz);
+        int qtdOcorrencias(A23* raiz, string palavra);
+        A23(string key);
+        A23* insert(A23* raiz, string palavra, bool &cresceu);
+        vector<string> palavraMaisFrequente(A23* raiz, palavrasMaisFrequentes* p);
 };

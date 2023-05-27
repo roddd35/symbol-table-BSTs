@@ -1,141 +1,268 @@
 #include "23tree.h"
 
-ttNode::ttNode(){
-
+A23::A23(string palavra)
+{
+    this->palavra1 = palavra;
+    this->palavra2 = " ";
+    this->info1.setLetras(palavra1.length());
+    this->info1.setOcorrencias(1);
+    this->info1.setVogais(this->info1.contaVogais(palavra1));
+    this->p1 = this->p2 = this->p3 = nullptr;
+    this->twoNode = true;
 }
 
-ttNode* ttNode::insere23(ttNode* raiz, string palavra, bool* cresceu){
+A23* A23::insert(A23* raiz, string palavra, bool &cresceu){
     if(raiz == nullptr){
-        raiz = new ttNode();
-        raiz->palavra1 = palavra;
-        raiz->palavra2 = nullptr;
-        raiz->info1.setLetras(palavra.length());
-        raiz->info1.setOcorrencias(1);
-        raiz->info1.setVogais(raiz->info1.contaVogais(palavra));
-        raiz->twoNode = false;
-        raiz->p1 = nullptr;
-        raiz->p2 = nullptr;
-        raiz->p3 = nullptr;
-        *cresceu = true;
-
+        raiz = new A23(palavra);
+        cresceu = true;
         return raiz;
     }
-    if(raiz->p1 != nullptr){ //raiz não é folha
-        if(raiz->palavra1 > palavra){
-            ttNode* p = insere23(raiz->p1, palavra, cresceu);
-            if(*cresceu){    // split
+    else if(palavra == raiz->palavra1 || palavra == raiz->palavra2){
+        if(palavra == raiz->palavra1)
+            raiz->info1.setOcorrencias(raiz->info1.getOcorrencias() + 1);
+        if(palavra == raiz->palavra2)
+            raiz->info2.setOcorrencias(raiz->info2.getOcorrencias() + 1);
+        return raiz;
+    }
+
+    else if(raiz->p1 != nullptr){
+        if(palavra < raiz->palavra1){
+            A23* aux = insert(raiz->p1,palavra,cresceu);
+            if(cresceu){
                 if(raiz->twoNode){
                     raiz->palavra2 = raiz->palavra1;
                     raiz->info2 = raiz->info1;
+                    raiz->palavra1 = aux->palavra1;
+                    raiz->info1 = aux->info1;
                     raiz->p3 = raiz->p2;
-                    raiz->palavra1 = p->palavra1;
-                    raiz->info1 = p->info1;
-                    raiz->p2 = p->p2;
-                    *cresceu = false;
+                    raiz->p2 = aux->p2;
+                    raiz->p1 = aux->p1;
+                    cresceu = false;
                     raiz->twoNode = false;
                     return raiz;
                 }
                 else{
-                    ttNode* novo = new ttNode();
-                    novo->palavra1 = raiz->palavra2;
-                    novo->info1 = raiz->info2;
-                    novo->p2 = raiz->p3;
-                    novo->p1 = raiz->p2;
-                    ttNode* nRaiz = new ttNode();
-                    nRaiz->palavra1 = raiz->palavra1;
-                    nRaiz->info1 = raiz->info1;
-                    nRaiz->p2 = novo;
-                    nRaiz->p1 = raiz;
-                    raiz->palavra1 = p->palavra1;
-                    raiz->info1 = p->info1;
-                    raiz->palavra2 = nullptr;
+                    A23* node = new A23(palavra);
+                    node->palavra1 = raiz->palavra2;
+                    node->info1 = raiz->info2;
+                    node->p2 = raiz->p3;
+                    node->p1 = raiz->p2;
+                    A23* novaRaiz = new A23(palavra);
+                    novaRaiz->palavra1 = raiz->palavra1;
+                    novaRaiz->info1 = raiz->info1;
+                    novaRaiz->p2 = node;
+                    novaRaiz->p1 = raiz;
+                    raiz->palavra1 = aux->palavra1;
+                    raiz->info1 = aux->info1;
+                    raiz->palavra2 = " ";
+                    raiz->info2.setLetras(0);
+                    raiz->info2.setOcorrencias(0);
+                    raiz->info2.setVogais(0);
                     raiz->p3 = nullptr;
-                    raiz->p2 = p->p2;
-                    novo->twoNode = raiz->twoNode = nRaiz->twoNode = true;
-                    *cresceu = true;
-                    delete(p);
-                    return nRaiz;
+                    raiz->p2 = aux->p2;
+                    raiz->p1 = aux->p1;
+                    node->twoNode = raiz->twoNode = novaRaiz->twoNode = true;
+                    cresceu = true;
+                    return novaRaiz;
                 }
             }
             else{
-                raiz->p1 = p;
-                *cresceu = false;
+                raiz->p1 = aux;
+                cresceu = false;
                 return raiz;
             }
         }
-        else if(raiz->twoNode || raiz->palavra2 > palavra){
-            ttNode* p  = insere23(raiz->p2, palavra, cresceu);
-            // tem que fazer o resto aqui? if cresceu, else, etc.
+        else if(raiz->twoNode || palavra < raiz->palavra2){
+            A23* aux = insert(raiz->p2, palavra, cresceu);
+            if(cresceu){
+                if(raiz->twoNode){
+                    raiz->palavra2 = aux->palavra1;
+                    raiz->info2 = aux->info1;
+                    raiz->p2 = aux->p1;
+                    raiz->p3 = aux->p2;
+                    cresceu = false;
+                    raiz->twoNode = false;
+                    return raiz;
+                }
+                else{
+                    A23* node = new A23(palavra);
+                    node->palavra1 = raiz->palavra2;
+                    node->info1 = raiz->info2;
+                    node->p2 = raiz->p3;
+                    node->p1 = aux->p2;
+                    A23* novaRaiz = new A23(palavra);
+                    novaRaiz->palavra1 = aux->palavra1;
+                    novaRaiz->info1 = aux->info1;
+                    novaRaiz->p2 = node;
+                    novaRaiz->p1 = raiz;
+                    raiz->palavra2 = " ";
+                    raiz->info2.setLetras(0);
+                    raiz->info2.setOcorrencias(0);
+                    raiz->info2.setVogais(0);
+                    raiz->p2 = aux->p1;
+                    raiz->p3 = nullptr;
+                    node->twoNode = raiz->twoNode = novaRaiz->twoNode = true;
+                    cresceu = true;
+                    return novaRaiz;
+                }
+            }
+            else{
+                raiz->p2 = aux;
+                cresceu = false;
+                return raiz;
+            }
         }
-        else{
-            //insere p3
+        else
+        {
+            A23* aux = insert(raiz->p3, palavra, cresceu);
+            if(cresceu){
+                if(raiz->twoNode){
+                    raiz->palavra2 = aux->palavra1;
+                    raiz->info2 = aux->info1;
+                    raiz->p2 = aux->p1;
+                    raiz->p3 = aux->p2;
+                    cresceu = false;
+                    raiz->twoNode = false;
+                    return raiz;
+                }
+                else{
+                    A23* novaRaiz = new A23(palavra);
+                    novaRaiz->palavra1 = raiz->palavra2;
+                    novaRaiz->info1 = raiz->info2;
+                    novaRaiz->p2 = aux;
+                    novaRaiz->p1 = raiz;
+                    raiz->palavra2 = " ";
+                    raiz->p3 = nullptr;
+                    raiz->twoNode = novaRaiz->twoNode = true;
+                    return novaRaiz;
+                }
+            }
+            else{
+                raiz->p3 = aux;
+                cresceu = false;
+                return raiz;
+            }
         }
     }
     else{
         if(raiz->twoNode){
-            if(raiz->palavra1 > palavra){
+            if(palavra < raiz->palavra1){
                 raiz->palavra2 = raiz->palavra1;
                 raiz->info2 = raiz->info1;
                 raiz->palavra1 = palavra;
-                raiz->info1.setLetras(palavra.length());
-                raiz->info1.setOcorrencias(1);
-                raiz->info1.setVogais(raiz->info1.contaVogais(palavra));
                 raiz->twoNode = false;
-                *cresceu = false;
-
+                cresceu = false;
                 return raiz;
             }
             else{
                 raiz->palavra2 = palavra;
-                raiz->info2.setLetras(palavra.length());
-                raiz->info2.setOcorrencias(1);
-                raiz->info2.setVogais(raiz->info2.contaVogais(palavra));
                 raiz->twoNode = false;
-                *cresceu = false;
-
+                cresceu = false;
                 return raiz;
             }
         }
-        else{   // três  nó
+        else{
             if(palavra < raiz->palavra1){
-                ttNode* novo = new ttNode();
-                ttNode* nRaiz = new ttNode();
-                raiz->twoNode = nRaiz->twoNode = novo->twoNode = true;
-                *cresceu = true;
-                return nRaiz;
+                A23* node = new A23(palavra);
+                A23* novaRaiz = new A23(raiz->palavra1);
+                novaRaiz->p1 = node;
+                novaRaiz->p2 = raiz;
+                raiz->palavra1 = raiz->palavra2;
+                raiz->info1 = raiz->info2;
+                raiz->palavra2 = " ";
+                raiz->info2.setLetras(0);
+                raiz->info2.setOcorrencias(0);
+                raiz->info2.setVogais(0);
+                raiz->twoNode = true;
+                cresceu = true;
+                return novaRaiz;
             }
             else if(palavra < raiz->palavra2){
-
+                A23* node = new A23(raiz->palavra2);
+                A23* novaRaiz = new A23(palavra);
+                novaRaiz->p2 = node;
+                novaRaiz->p1 = raiz;
+                raiz->palavra2 = " ";
+                raiz->twoNode = true;
+                cresceu = true;
+                return novaRaiz;
             }
-            else{   // palavra > raiz->palavra2
-
+            else{
+                A23* node = new A23(palavra);
+                A23* novaRaiz = new A23(raiz->palavra2);
+                novaRaiz->p2 = node;
+                novaRaiz->p1 = raiz;
+                raiz->palavra2 = " ";
+                raiz->twoNode = true;
+                cresceu = true;
+                return novaRaiz;
             }
         }
     }
+    return raiz;
 }
 
-int ttNode::qtdOcorrencias(ttNode* raiz, string palavra){
+int A23::qtdOcorrencias(A23* raiz, string palavra){
     if(raiz == nullptr)
         return 0;
     if(raiz->twoNode){
         if(raiz->palavra1 == palavra)
-            return this->info1.getOcorrencias();
+            return raiz->info1.getOcorrencias();
         else if(raiz->palavra1 < palavra)
-            return qtdOcorrencias(raiz->p3, palavra);
+            return qtdOcorrencias(raiz->p2, palavra);
         else
             return qtdOcorrencias(raiz->p1, palavra);
     }
     else{
         if(raiz->palavra1 == palavra || raiz->palavra2 == palavra){
             if(raiz->palavra1 == palavra)
-                return this->info1.getOcorrencias();
+                return raiz->info1.getOcorrencias();
             else
-                return this->info2.getOcorrencias();
+                return raiz->info2.getOcorrencias();
         }
-        if(this->palavra1 < palavra)
+        if(palavra < raiz->palavra1)
             return qtdOcorrencias(raiz->p1, palavra);
-        if(this->palavra2 < palavra)
+        if(palavra < raiz->palavra2) 
             return qtdOcorrencias(raiz->p2, palavra);
         return qtdOcorrencias(raiz->p3, palavra);
     }
+}
+
+void A23::inOrder(A23* raiz){
+    if(raiz == nullptr)
+        return;
+    if(!raiz->twoNode){
+        inOrder(raiz->p1);
+        cout << raiz->palavra1 << raiz->info1.getOcorrencias() << endl << raiz->palavra2  << raiz->info2.getOcorrencias() << endl;
+        inOrder(raiz->p2);
+        cout << raiz->palavra1 << raiz->info1.getOcorrencias() << endl << raiz->palavra2 << raiz->info2.getOcorrencias() << endl;
+        inOrder(raiz->p3);
+    }
+    if(raiz->twoNode){
+        inOrder(raiz->p1);
+        cout << raiz->palavra1 << raiz->info1.getOcorrencias() << endl;
+        inOrder(raiz->p2);
+    }
+}
+
+vector<string> A23::palavraMaisFrequente(A23* raiz, palavrasMaisFrequentes* p){
+    if(raiz->p1 != nullptr)
+        palavraMaisFrequente(raiz->p1, p);
+    if(raiz->info1.getOcorrencias() >= p->frequencia || raiz->info2.getOcorrencias() >= p->frequencia){
+        if(raiz->info1.getOcorrencias() > p->frequencia){
+            p->palavras.clear();
+            p->frequencia = raiz->info1.getOcorrencias();
+            p->palavras.push_back(raiz->palavra1);
+        }
+        if(raiz->info2.getOcorrencias() > p->frequencia){
+            p->palavras.clear();
+            p->frequencia = raiz->info2.getOcorrencias();
+            p->palavras.push_back(raiz->palavra2);
+        }
+    }
+    if(raiz->p2 != nullptr)
+        palavraMaisFrequente(raiz->p2, p);
+    if(raiz->p3 != nullptr)
+        palavraMaisFrequente(raiz->p3, p);
+    return p->palavras;
 }

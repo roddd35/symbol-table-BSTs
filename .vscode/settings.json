@@ -5,6 +5,7 @@
         "string": "cpp",
         "random": "cpp",
         "deque": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "chrono": "cpp"
     }
 }

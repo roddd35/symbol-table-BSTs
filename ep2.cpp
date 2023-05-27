@@ -2,6 +2,7 @@
 #include "treap.h"
 #include "rubroNegra.h"
 #include "vetorOrdenado.h"
+#include "23tree.h"
 #include <iostream>
 #include <cstring>
 #include <algorithm>
@@ -14,7 +15,7 @@ int qtdVogaisSemRepeticao(string palavra);
 void imprimeSep();
 void imprimeVector(int q, vector<string> v);
 void imprime(int estrutura, vetorOrdenado* vector, No* noABB, treapNode* noTreap, redBlackNode* noRubroNegra);
-void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTreap, redBlackNode* noRubroNegra, vector<string> maisFrequentes, vector<string> longestWords, vector<string> maioresSemRepeticao, vector<string> vogaisSemRepeticao);
+void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTreap, A23* noTwoThree, redBlackNode* noRubroNegra, vector<string> maisFrequentes, vector<string> longestWords, vector<string> maioresSemRepeticao, vector<string> vogaisSemRepeticao);
 
 // exemplo: 39
 // hamlet: 33287
@@ -41,6 +42,7 @@ int main(){
     vector<string> maioresSemRepeticao;
     vector<string> vogaisSemRepeticao;
 
+    // INÍCIO
     cout << "-*- Bem Vinde à tabela de símbolos -*-" << endl;
     cout << "1. Vetor dinâmico ordenado" << endl << "2. Árvore de Busca Binária" << endl << "3. Treaps" << endl << "4. Árvore 2-3" << endl << "5. Árvore rubro-negra" << endl;
     cout << "Informe qual estrutura você deseja testar (número): ";
@@ -51,7 +53,6 @@ int main(){
     cout << "Digite o número de palavras no texto: ";
     cin >> n;
 
-    // Leitura do arquivo e palavra a palavra
     cout << "Digite o nome do arquivo de leitura: ";
     cin >> nomeArquivo;
 
@@ -62,6 +63,7 @@ int main(){
     treapNode* noTreap = new treapNode(); 
     vetorOrdenado* vector = new vetorOrdenado(n);
     redBlackNode* noRubroNegra = new redBlackNode();
+    A23* noTwoThree = new A23(" ");
 
     arquivo = fopen(nomeArquivo, "r");
     if(arquivo == NULL)
@@ -112,7 +114,7 @@ int main(){
                         longestWords.clear();
                     longestWords.push_back(palavra);
                 }
-
+                bool cresceu;
                 // Enviar palavras para as estruturas
                 if(nomeEstrutura == 1)
                     vector->insereVetor(palavra);
@@ -120,6 +122,8 @@ int main(){
                     noABB = noABB->insereABB(noABB, palavra);
                 else if(nomeEstrutura == 3)
                     noTreap = noTreap->insereTreap(noTreap, palavra);
+                else if(nomeEstrutura == 4)
+                    noTwoThree = noTwoThree->insert(noTwoThree, palavra, cresceu);
                 else if(nomeEstrutura == 5)
                     noRubroNegra = noRubroNegra->insereRedBlack(noRubroNegra, palavra);
                 else{
@@ -139,12 +143,11 @@ int main(){
         cout << "1. Palavras mais frequentes (F)" << endl << "2. Ocorrências de uma palavra (O(palavra))" << endl << "3. Palavras mais longas (L)" << endl << "4. Maiores palavras sem repetição de letras (SR)" << endl << "5. Menores palavras com mais vogais sem repetição (VD)" << endl;
         cout << "Por favor, selecione uma consulta: ";
         cin >> q;
-        consulta(q, nomeEstrutura, vector, noABB, noTreap, noRubroNegra, maisFrequentes, longestWords, maioresSemRepeticao, vogaisSemRepeticao);
+        consulta(q, nomeEstrutura, vector, noABB, noTreap, noTwoThree, noRubroNegra, maisFrequentes, longestWords, maioresSemRepeticao, vogaisSemRepeticao);
         imprimeSep();
     }
-    
-    fclose(arquivo);
 
+    fclose(arquivo);
     return 0;
 }
 
@@ -197,7 +200,7 @@ void imprime(int estrutura, vetorOrdenado* vector, No* noABB, treapNode* noTreap
         noRubroNegra->imprime(noRubroNegra);
 }
 
-void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTreap, redBlackNode* noRubroNegra, vector<string> maisFrequentes, vector<string> longestWords, vector<string> maioresSemRepeticao, vector<string> vogaisSemRepeticao){    
+void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTreap, A23* noTwoThree, redBlackNode* noRubroNegra, vector<string> maisFrequentes, vector<string> longestWords, vector<string> maioresSemRepeticao, vector<string> vogaisSemRepeticao){    
     int qtdOcorrencias;
     string palavra;
 
@@ -208,18 +211,16 @@ void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTr
         palavrasMaisFrequentes* p = new palavrasMaisFrequentes();
         p->palavras = maisFrequentes;
         cout << "As palavras mais frequentes do texto são: " << endl;
-        if(estrutura == 1){
+        if(estrutura == 1)
             imprimeVector(q, v->palavraMaisFrequente());
-        }
-        if(estrutura == 2){
+        else if(estrutura == 2)
             imprimeVector(q, noABB->palavraMaisFrequente(noABB, p));
-        }
-        if(estrutura == 3){
+        else if(estrutura == 3)
             imprimeVector(q, noTreap->palavraMaisFrequente(noTreap, p));
-        }
-        if(estrutura == 5){
+        else if(estrutura == 4)
+            imprimeVector(q, noTwoThree->palavraMaisFrequente(noTwoThree, p));
+        else if(estrutura == 5)
             imprimeVector(q, noRubroNegra->palavraMaisFrequente(noRubroNegra, p));
-        }
     }
 
     // CONSULTA O(PALAVRA)
@@ -232,6 +233,8 @@ void consulta(int q, int estrutura, vetorOrdenado* v, No* noABB, treapNode* noTr
             qtdOcorrencias = noABB->qtdOcorrencias(noABB, palavra);
         else if(estrutura == 3)
             qtdOcorrencias = noTreap->qtdOcorrencias(noTreap, palavra);
+        else if(estrutura == 4)
+            qtdOcorrencias = noTwoThree->qtdOcorrencias(noTwoThree, palavra);
         else if(estrutura == 5)
             qtdOcorrencias = noRubroNegra->qtdOcorrencias(noRubroNegra, palavra);
         
